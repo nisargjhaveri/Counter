@@ -14,7 +14,6 @@ import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -135,7 +134,6 @@ public class MainActivity extends AppCompatActivity {
                 storage_editor.putString("counter_uuid_" + section_number, counter_id);
                 storage_editor.apply();
             }
-            Log.d("Hey!.UUID", counter_id);
 
             label = storage.getString("counter_label_" + counter_id, label);
             count = storage.getInt("counter_count_" + counter_id, count);
@@ -198,7 +196,6 @@ public class MainActivity extends AppCompatActivity {
                     storage_editor.apply();
 
                     int current_position = ((MainActivity) getActivity()).mViewPager.getCurrentItem();
-                    Log.d("Hey!.de", String.valueOf(current_position));
 
                     for (int i = current_position + 1; i < ((MainActivity) getActivity()).mSectionsPagerAdapter.getCount(); i++) {
                         storage_editor.putString("counter_uuid_" + i, storage.getString("counter_uuid_" + (i + 1), null));
@@ -259,7 +256,6 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
-            Log.d("Hey!", String.valueOf(position));
             if (position == count) {
                 return new AddCounterFragment();
             } else {
