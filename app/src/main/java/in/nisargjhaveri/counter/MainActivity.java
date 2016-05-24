@@ -177,13 +177,21 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
+            final ImageButton resetButton = (ImageButton) rootView.findViewById(R.id.reset_counter);
+            resetButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    count = 0;
+                    countView.setText(String.valueOf(count));
+                    storage_editor.putInt("counter_count_" + counter_id, count);
+                    storage_editor.apply();
+                }
+            });
+
             final ImageButton deleteButton = (ImageButton) rootView.findViewById(R.id.delete_counter);
             deleteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    final SharedPreferences storage = getActivity().getPreferences(MODE_PRIVATE);
-                    SharedPreferences.Editor storage_editor = storage.edit();
-
                     int counters = storage.getInt(MainActivity.NUMBER_OF_COUNTERS, MainActivity.DEFAULT_NUMBER_OF_COUNTERS) - 1;
 
                     storage_editor.putInt(MainActivity.NUMBER_OF_COUNTERS, counters);
@@ -194,7 +202,6 @@ public class MainActivity extends AppCompatActivity {
 
                     for (int i = current_position + 1; i < ((MainActivity) getActivity()).mSectionsPagerAdapter.getCount(); i++) {
                         storage_editor.putString("counter_uuid_" + i, storage.getString("counter_uuid_" + (i + 1), null));
-                        Log.d("Hey!.all", "counter_uuid_" + i + "     " + storage.getString("counter_uuid_" + i, "NULL2"));
                     }
                     storage_editor.apply();
 

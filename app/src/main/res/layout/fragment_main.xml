@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:textAlignment="center"
             android:textSize="@dimen/label_text_size"
-            android:inputType="textAutoComplete"
+            android:inputType="textCapWords|textAutoComplete|textCapSentences|text"
             android:nextFocusForward="@id/section_parent"
             android:background="@android:color/transparent" />
 
@@ -47,6 +47,20 @@
         android:contentDescription="@string/delete_counter"
         android:background="@drawable/ic_delete"
         android:layout_alignParentBottom="true"
-        android:padding="@dimen/fab_margin" />
+        android:padding="@dimen/fab_margin"
+        android:alpha="0.7"
+        />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/reset_counter"
+        android:layout_gravity="center_horizontal"
+        android:contentDescription="@string/delete_counter"
+        android:background="@drawable/ic_cached"
+        android:padding="@dimen/fab_margin"
+        android:alpha="0.7"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>
