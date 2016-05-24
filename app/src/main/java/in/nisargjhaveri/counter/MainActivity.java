@@ -34,25 +34,32 @@ public class MainActivity extends AppCompatActivity {
      * may be best to switch to a
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
-    private SectionsPagerAdapter mSectionsPagerAdapter;
+    public SectionsPagerAdapter mSectionsPagerAdapter;
 
     /**
      * The {@link ViewPager} that will host the section contents.
      */
-    private ViewPager mViewPager;
+    public ViewPager mViewPager;
+
+    public static final String NUMBER_OF_COUNTERS = "counter_number_of_counters";
+    public static final int DEFAULT_NUMBER_OF_COUNTERS = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        final SharedPreferences storage = this.getPreferences(MODE_PRIVATE);
+        int numberOfCounters = storage.getInt(NUMBER_OF_COUNTERS, DEFAULT_NUMBER_OF_COUNTERS);
+
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), numberOfCounters);
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+
     }
 
 
@@ -118,7 +125,6 @@ public class MainActivity extends AppCompatActivity {
             counter_id = String.valueOf(section_number);
 
             final SharedPreferences storage = getActivity().getPreferences(MODE_PRIVATE);
-            Log.d("Hey!", storage.getAll().toString());
             storage_editor = storage.edit();
 
             label = storage.getString("counter_label_" + counter_id, label);
@@ -165,40 +171,81 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public static class AddCounterFragment extends Fragment {
+
+        public AddCounterFragment() {}
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.fragment_add_counter, container, false);
+
+            final TextView countView = (TextView) rootView.findViewById(R.id.section_add);
+            countView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final SharedPreferences storage = getActivity().getPreferences(MODE_PRIVATE);
+                    SharedPreferences.Editor storage_editor = storage.edit();
+
+                    int counters = storage.getInt(MainActivity.NUMBER_OF_COUNTERS, MainActivity.DEFAULT_NUMBER_OF_COUNTERS) + 1;
+
+                    storage_editor.putInt(MainActivity.NUMBER_OF_COUNTERS, counters);
+                    storage_editor.apply();
+
+                    ((MainActivity) getActivity()).mSectionsPagerAdapter.addPage();
+                }
+            });
+
+            return rootView;
+        }
+
+    }
+
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
      */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
-        public SectionsPagerAdapter(FragmentManager fm) {
+        private int count;
+        private int baseId = 0;
+
+        public SectionsPagerAdapter(FragmentManager fm, int c) {
             super(fm);
+            count = c;
         }
 
         @Override
         public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position + 1);
+            Log.d("Hey!", String.valueOf(position));
+            if (position == count) {
+                return new AddCounterFragment();
+            } else {
+                return PlaceholderFragment.newInstance(position + 1);
+            }
         }
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
-            return 3;
+            return count + 1;
+        }
+
+        public void addPage() {
+            baseId++;
+            count++;
+            notifyDataSetChanged();
         }
 
         @Override
-        public CharSequence getPageTitle(int position) {
-            switch (position) {
-                case 0:
-                    return "SECTION 1";
-                case 1:
-                    return "SECTION 2";
-                case 2:
-                    return "SECTION 3";
-            }
-            return null;
+        public int getItemPosition(Object object) {
+            return POSITION_NONE;
         }
+
+        @Override
+        public long getItemId(int position) {
+            // give an ID different from position when position has been changed
+            return baseId * count + position;
+        }
+
     }
 }
