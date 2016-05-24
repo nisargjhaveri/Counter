@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAlignment="center"
-        android:text="Add New Counter"/>
+        android:text="@string/add_new_counter"/>
 
     <TextView
         android:id="@+id/section_add"
