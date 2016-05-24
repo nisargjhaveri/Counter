@@ -44,23 +44,22 @@
         android:layout_height="wrap_content"
         android:id="@+id/delete_counter"
         android:layout_gravity="center_horizontal"
-        android:contentDescription="@string/delete_counter"
         android:background="@drawable/ic_delete"
         android:layout_alignParentBottom="true"
         android:padding="@dimen/fab_margin"
         android:alpha="0.7"
-        />
+        android:contentDescription="@string/delete_counter" />
 
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/reset_counter"
         android:layout_gravity="center_horizontal"
-        android:contentDescription="@string/delete_counter"
         android:background="@drawable/ic_cached"
         android:padding="@dimen/fab_margin"
         android:alpha="0.7"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:contentDescription="@string/reset_counter" />
 
 </RelativeLayout>

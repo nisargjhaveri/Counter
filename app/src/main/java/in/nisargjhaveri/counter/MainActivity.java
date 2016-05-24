@@ -2,6 +2,7 @@ package in.nisargjhaveri.counter;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -24,6 +25,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import java.util.Random;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
@@ -98,7 +100,8 @@ public class MainActivity extends AppCompatActivity {
         private static final String ARG_SECTION_NUMBER = "section_number";
 
         private String counter_id;
-        private String label = "New label";
+        private String label;
+        private int bgcolor;
         private int count = 0;
 
         protected SharedPreferences.Editor storage_editor;
@@ -135,9 +138,22 @@ public class MainActivity extends AppCompatActivity {
                 storage_editor.apply();
             }
 
-            label = storage.getString("counter_label_" + counter_id, label);
+            Random rand = new Random();
+            bgcolor = storage.getInt("counter_bgcolor_" + counter_id, -1);
+            if (bgcolor == -1) {
+                bgcolor = Color.rgb(
+                        155 + rand.nextInt(100),
+                        155 + rand.nextInt(100),
+                        155 + rand.nextInt(100)
+                );
+                storage_editor.putInt("counter_bgcolor_" + counter_id, bgcolor);
+                storage_editor.apply();
+            }
+
+            label = storage.getString("counter_label_" + counter_id, getResources().getString(R.string.default_label));
             count = storage.getInt("counter_count_" + counter_id, count);
 
+            rootView.setBackgroundColor(bgcolor);
             rootView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -248,10 +264,19 @@ public class MainActivity extends AppCompatActivity {
 
         private int count;
         private int baseId = 0;
+        private int maxCount = 0;
+
 
         public SectionsPagerAdapter(FragmentManager fm, int c) {
             super(fm);
             count = c;
+            updateMaxCount();
+        }
+
+        private void updateMaxCount() {
+            if (count > maxCount) {
+                maxCount = count;
+            }
         }
 
         @Override
@@ -271,12 +296,14 @@ public class MainActivity extends AppCompatActivity {
         public void addPage() {
             baseId++;
             count++;
+            updateMaxCount();
             notifyDataSetChanged();
         }
 
         public void deletePage() {
             baseId += 2;
             count--;
+            updateMaxCount();
             notifyDataSetChanged();
         }
 
@@ -288,7 +315,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public long getItemId(int position) {
             // give an ID different from position when position has been changed
-            return baseId * (count + 1) + position;
+            return baseId * (maxCount + 1) + position;
         }
     }
 }
