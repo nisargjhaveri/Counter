@@ -6,7 +6,7 @@ A beautiful app to help keep count of things!
 - Manage multiple counters
 - Each counter has its own beautiful colour
 - Reset counter, manage label of individual counters
-- Supports multiple languages
+- Available in multiple languages. Currently English, Gujarati and Hindi
 
 ### Contribute
 - Bug reports, feature requests in GitHub issues
