@@ -1,12 +1,12 @@
 package in.nisargjhaveri.counter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Color;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -15,6 +15,7 @@ import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,7 +26,9 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import java.util.Locale;
 import java.util.Random;
+import java.util.Set;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
@@ -56,6 +59,10 @@ public class MainActivity extends AppCompatActivity {
         final SharedPreferences storage = this.getPreferences(MODE_PRIVATE);
         int numberOfCounters = storage.getInt(NUMBER_OF_COUNTERS, DEFAULT_NUMBER_OF_COUNTERS);
 
+        final SharedPreferences settings = this.getSharedPreferences(SettingsActivity.SHARED_PREFS, MODE_PRIVATE);
+        String lang = settings.getString("preferred_locale", "");
+        setLocale(lang);
+
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), numberOfCounters);
@@ -63,30 +70,33 @@ public class MainActivity extends AppCompatActivity {
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-
     }
 
+    public void setLocale(String lang) {
+        Locale myLocale = new Locale(lang);
+        Resources res = getBaseContext().getResources();
+        DisplayMetrics dm = res.getDisplayMetrics();
+        Configuration conf = res.getConfiguration();
+        conf.locale = myLocale;
+        res.updateConfiguration(conf, dm);
+    }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+    public void refreshActivity() {
+        Intent refresh = new Intent(this, this.getClass());
+        startActivity(refresh);
+        finish();
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+    public void onRestart() {
+        super.onRestart();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+        refreshActivity();
+    }
 
-        return super.onOptionsItemSelected(item);
+    private void openSettings() {
+        Intent settings = new Intent(this, SettingsActivity.class);
+        startActivity(settings);
     }
 
     /**
@@ -248,6 +258,14 @@ public class MainActivity extends AppCompatActivity {
                     storage_editor.apply();
 
                     ((MainActivity) getActivity()).mSectionsPagerAdapter.addPage();
+                }
+            });
+
+            final ImageButton settingsButton = (ImageButton) rootView.findViewById(R.id.app_settings);
+            settingsButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ((MainActivity) getActivity()).openSettings();
                 }
             });
 

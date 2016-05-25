@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">કાઉન્ટર</string>
+    <string name="delete_counter">કાઉન્ટર કાઢી નાંખો</string>
+    <string name="add_new_counter">નવું કાઉન્ટર ઉમેરો</string>
+    <string name="reset_counter">કાઉન્ટર ફરી ચાલુ કરો</string>
+    <string name="default_label">નવું નામ</string>
+    <string name="settings">ગોઠવણીઓ!</string>
+    <string name="select_app_language">ભાષા પસંદ કરો</string>
+</resources>
