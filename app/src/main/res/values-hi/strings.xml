@@ -7,4 +7,5 @@
     <string name="default_label">नया नाम</string>
     <string name="settings">सेटिंग्स</string>
     <string name="select_app_language">भाषा पसंद करो</string>
+    <string name="decrement_counter">काउंटर में से एक कम करो</string>
 </resources>

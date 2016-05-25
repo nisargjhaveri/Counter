@@ -201,6 +201,17 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
+            final TextView decreaseButton = (TextView) rootView.findViewById(R.id.decrement_counter);
+            decreaseButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    count--;
+                    countView.setText(String.valueOf(count));
+                    storage_editor.putInt("counter_count_" + counter_id, count);
+                    storage_editor.apply();
+                }
+            });
+
             final ImageButton resetButton = (ImageButton) rootView.findViewById(R.id.reset_counter);
             resetButton.setOnClickListener(new View.OnClickListener() {
                 @Override
