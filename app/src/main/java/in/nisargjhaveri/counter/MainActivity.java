@@ -91,6 +91,11 @@ public class MainActivity extends AppCompatActivity {
         refreshActivity();
     }
 
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+    }
+
     private void openSettings() {
         Intent settings = new Intent(this, SettingsActivity.class);
         startActivity(settings);
