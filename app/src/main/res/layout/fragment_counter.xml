@@ -35,36 +35,41 @@
             android:layout_height="wrap_content"
             android:textAlignment="center"
             android:textSize="@dimen/count_text_size"
-            android:text="0" />
+            android:text="0"
+            android:background="?android:attr/selectableItemBackgroundBorderless" />
 
     </LinearLayout>
 
     <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/tool_button_length"
+        android:layout_height="@dimen/tool_button_length"
+        android:scaleType="fitXY"
         android:id="@+id/delete_counter"
         android:layout_gravity="center_horizontal"
-        android:background="@drawable/ic_delete"
+        android:src="@drawable/ic_delete"
         android:layout_alignParentBottom="true"
-        android:padding="@dimen/fab_margin"
+        android:padding="@dimen/tool_button_padding"
         android:alpha="0.7"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
         android:contentDescription="@string/delete_counter" />
 
     <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/tool_button_length"
+        android:layout_height="@dimen/tool_button_length"
+        android:scaleType="fitXY"
         android:id="@+id/reset_counter"
         android:layout_gravity="center_horizontal"
-        android:background="@drawable/ic_cached"
-        android:padding="@dimen/fab_margin"
+        android:src="@drawable/ic_cached"
+        android:padding="@dimen/tool_button_padding"
         android:alpha="0.7"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
         android:contentDescription="@string/reset_counter" />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/tool_button_length"
+        android:layout_height="@dimen/tool_button_length"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:id="@+id/decrement_counter"
@@ -72,6 +77,10 @@
         android:textColor="#000000"
         android:alpha="0.7"
         android:text="-1"
+        android:textAlignment="center"
+        android:padding="@dimen/tool_button_padding"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
         android:contentDescription="@string/decrement_counter" />
 
 </RelativeLayout>

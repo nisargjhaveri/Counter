@@ -31,14 +31,16 @@
     </LinearLayout>
 
     <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/tool_button_length"
+        android:layout_height="@dimen/tool_button_length"
+        android:scaleType="fitXY"
         android:id="@+id/app_settings"
-        android:background="@drawable/ic_settings"
+        android:src="@drawable/ic_settings"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:padding="@dimen/fab_margin"
+        android:padding="@dimen/tool_button_padding"
         android:alpha="0.7"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
         android:contentDescription="@string/app_settings" />
 
 </RelativeLayout>
