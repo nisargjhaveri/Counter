@@ -51,7 +51,7 @@ public class DataStore {
             );
 
             if (c.moveToFirst()) {
-                String value = c.getString(c.getColumnIndex(META_COLUMN_NAME));
+                String value = c.getString(c.getColumnIndex(META_COLUMN_VALUE));
                 c.close();
                 return value;
             }
@@ -60,23 +60,7 @@ public class DataStore {
         }
 
         public int getInt(String name, int defaultValue) {
-            Cursor c = db.query(
-                    TABLE_NAME_META,
-                    new String[]{META_COLUMN_VALUE},
-                    META_COLUMN_NAME + " = ?",
-                    new String[]{name},
-                    null,
-                    null,
-                    null
-            );
-
-            if (c.moveToFirst()) {
-                String value = c.getString(c.getColumnIndex(META_COLUMN_VALUE));
-                c.close();
-                return Integer.parseInt(value);
-            }
-
-            return defaultValue;
+            return Integer.parseInt(getString(name, String.valueOf(defaultValue)));
         }
 
         public void set(String name, String value) {
@@ -88,11 +72,7 @@ public class DataStore {
         }
 
         public void set(String name, int value) {
-            ContentValues values = new ContentValues();
-            values.put(META_COLUMN_NAME, name);
-            values.put(META_COLUMN_VALUE, String.valueOf(value));
-
-            db.insertWithOnConflict(TABLE_NAME_META, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+            set(name, String.valueOf(value));
         }
 
         public void remove(String name) {

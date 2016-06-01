@@ -45,8 +45,7 @@ public class MainActivity extends AppCompatActivity {
         DataStore dbstorage = DataStore.getInstance();
         int numberOfCounters = dbstorage.meta.getInt(NUMBER_OF_COUNTERS, DEFAULT_NUMBER_OF_COUNTERS);
 
-        final SharedPreferences settings = this.getSharedPreferences(SettingsActivity.SHARED_PREFS, MODE_PRIVATE);
-        String lang = settings.getString("preferred_locale", "");
+        String lang = dbstorage.meta.getString(SettingsActivity.KEY_PREFERRED_LOCALE, "");
         setLocale(lang);
 
         // Create the adapter that will return a fragment for each of the three

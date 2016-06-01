@@ -22,16 +22,16 @@ import java.util.Locale;
 
 public class SettingsActivity extends AppCompatActivity {
 
-    final public static String SHARED_PREFS = "counter_shared_preferences";
+    final public static String KEY_PREFERRED_LOCALE = "preferred_locale";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        final SharedPreferences storage = this.getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        final DataStore storage = DataStore.getInstance();
 
-        String lang = storage.getString("preferred_locale", "");
+        String lang = storage.meta.getString(KEY_PREFERRED_LOCALE, "");
         setLocale(lang);
 
         List<String> listLocales = new ArrayList<String>();
@@ -57,10 +57,8 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     public void storeLocalePreference(String lang) {
-        final SharedPreferences storage = this.getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-        SharedPreferences.Editor storage_editor = storage.edit();
-        storage_editor.putString("preferred_locale", lang);
-        storage_editor.apply();
+        final DataStore storage = DataStore.getInstance();
+        storage.meta.set(KEY_PREFERRED_LOCALE, lang);
     }
 
     public void setLocale(String lang) {
