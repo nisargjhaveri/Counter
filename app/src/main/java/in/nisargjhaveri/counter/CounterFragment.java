@@ -144,10 +144,11 @@ public class CounterFragment extends Fragment {
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int counters = storage.getInt(MainActivity.NUMBER_OF_COUNTERS, MainActivity.DEFAULT_NUMBER_OF_COUNTERS) - 1;
+                DataStore dbstorage = DataStore.getInstance();
 
-                storage_editor.putInt(MainActivity.NUMBER_OF_COUNTERS, counters);
-                storage_editor.apply();
+                int counters = dbstorage.meta.getInt(MainActivity.NUMBER_OF_COUNTERS, MainActivity.DEFAULT_NUMBER_OF_COUNTERS) - 1;
+
+                dbstorage.meta.set(MainActivity.NUMBER_OF_COUNTERS, counters);
 
                 int current_position = ((MainActivity) getActivity()).mViewPager.getCurrentItem();
 

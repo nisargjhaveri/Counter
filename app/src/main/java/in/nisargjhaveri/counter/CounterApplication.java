@@ -3,7 +3,6 @@ package in.nisargjhaveri.counter;
 import android.app.Application;
 import android.content.res.AssetManager;
 import android.graphics.Typeface;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.lang.reflect.Array;
@@ -19,6 +18,10 @@ public class CounterApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
+        // Initialize DataStore
+        DataStore.init(getApplicationContext());
+
+        // Set Fonts
         Typeface normal = getTypefaceFromAssets(getAssets(), new String[]{"fonts/NotoSansDevanagari-Regular.ttf", "fonts/NotoSansGujarati-Regular.ttf"});
         Typeface bold = getTypefaceFromAssets(getAssets(), new String[]{"fonts/NotoSansDevanagari-Bold.ttf", "fonts/NotoSansGujarati-Bold.ttf"});
         Typeface italic = getTypefaceFromAssets(getAssets(), new String[]{});

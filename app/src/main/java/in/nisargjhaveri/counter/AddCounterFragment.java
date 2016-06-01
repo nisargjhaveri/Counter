@@ -1,7 +1,5 @@
 package in.nisargjhaveri.counter;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -24,13 +22,11 @@ public class AddCounterFragment extends Fragment {
         countView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final SharedPreferences storage = getActivity().getPreferences(Context.MODE_PRIVATE);
-                SharedPreferences.Editor storage_editor = storage.edit();
+                DataStore storage = DataStore.getInstance();
 
-                int counters = storage.getInt(MainActivity.NUMBER_OF_COUNTERS, MainActivity.DEFAULT_NUMBER_OF_COUNTERS) + 1;
+                int counters = storage.meta.getInt(MainActivity.NUMBER_OF_COUNTERS, MainActivity.DEFAULT_NUMBER_OF_COUNTERS) + 1;
 
-                storage_editor.putInt(MainActivity.NUMBER_OF_COUNTERS, counters);
-                storage_editor.apply();
+                storage.meta.set(MainActivity.NUMBER_OF_COUNTERS, counters);
 
                 ((MainActivity) getActivity()).mSectionsPagerAdapter.addPage();
             }

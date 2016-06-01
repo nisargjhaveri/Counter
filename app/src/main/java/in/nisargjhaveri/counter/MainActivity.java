@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
      */
     public ViewPager mViewPager;
 
-    public static final String NUMBER_OF_COUNTERS = "counter_number_of_counters";
+    public static final String NUMBER_OF_COUNTERS = "number_of_counters";
     public static final int DEFAULT_NUMBER_OF_COUNTERS = 1;
 
     @Override
@@ -41,7 +41,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         final SharedPreferences storage = this.getPreferences(MODE_PRIVATE);
-        int numberOfCounters = storage.getInt(NUMBER_OF_COUNTERS, DEFAULT_NUMBER_OF_COUNTERS);
+
+        DataStore dbstorage = DataStore.getInstance();
+        int numberOfCounters = dbstorage.meta.getInt(NUMBER_OF_COUNTERS, DEFAULT_NUMBER_OF_COUNTERS);
 
         final SharedPreferences settings = this.getSharedPreferences(SettingsActivity.SHARED_PREFS, MODE_PRIVATE);
         String lang = settings.getString("preferred_locale", "");
