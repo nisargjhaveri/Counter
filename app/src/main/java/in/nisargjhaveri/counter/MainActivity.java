@@ -1,7 +1,6 @@
 package in.nisargjhaveri.counter;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.support.v7.app.AppCompatActivity;
@@ -40,12 +39,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final SharedPreferences storage = this.getPreferences(MODE_PRIVATE);
+        DataStore storage = DataStore.getInstance();
+        int numberOfCounters = storage.meta.getInt(NUMBER_OF_COUNTERS, DEFAULT_NUMBER_OF_COUNTERS);
 
-        DataStore dbstorage = DataStore.getInstance();
-        int numberOfCounters = dbstorage.meta.getInt(NUMBER_OF_COUNTERS, DEFAULT_NUMBER_OF_COUNTERS);
-
-        String lang = dbstorage.meta.getString(SettingsActivity.KEY_PREFERRED_LOCALE, "");
+        String lang = storage.meta.getString(SettingsActivity.KEY_PREFERRED_LOCALE, "");
         setLocale(lang);
 
         // Create the adapter that will return a fragment for each of the three

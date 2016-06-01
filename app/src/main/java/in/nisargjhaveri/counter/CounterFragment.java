@@ -15,7 +15,6 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.Random;
-import java.util.UUID;
 
 public class CounterFragment extends Fragment {
     /**
@@ -27,7 +26,7 @@ public class CounterFragment extends Fragment {
     private String counter_id;
     private String label;
     private int bgcolor;
-    private int count = 0;
+    private int count;
 
     protected SharedPreferences.Editor storage_editor;
 
@@ -47,36 +46,32 @@ public class CounterFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_counter, container, false);
 
         int section_number = getArguments().getInt(ARG_SECTION_NUMBER);
 
-        final SharedPreferences storage = getActivity().getPreferences(Context.MODE_PRIVATE);
-        storage_editor = storage.edit();
+        final DataStore storage = DataStore.getInstance();
 
-        counter_id = storage.getString("counter_uuid_" + section_number, null);
-        if (counter_id == null) {
-            counter_id = UUID.randomUUID().toString();
-            storage_editor.putString("counter_uuid_" + section_number, counter_id);
-            storage_editor.apply();
-        }
+        DataStore.Counter newCounter = storage.counters.getCounterAt(section_number - 1);
 
-        Random rand = new Random();
-        bgcolor = storage.getInt("counter_bgcolor_" + counter_id, -1);
-        if (bgcolor == -1) {
+        if (newCounter == null) {
+            Random rand = new Random();
             bgcolor = Color.rgb(
                     155 + rand.nextInt(100),
                     155 + rand.nextInt(100),
                     155 + rand.nextInt(100)
             );
-            storage_editor.putInt("counter_bgcolor_" + counter_id, bgcolor);
-            storage_editor.apply();
+
+            newCounter = storage.counters.createCounter(null, 0, bgcolor);
         }
 
-        label = storage.getString("counter_label_" + counter_id, getResources().getString(R.string.default_label));
-        count = storage.getInt("counter_count_" + counter_id, count);
+        final DataStore.Counter counter = newCounter;
+
+        bgcolor = counter.getBgColor();
+        label = counter.getLabel(getResources().getString(R.string.default_label));
+        count = counter.getCount();
 
         rootView.setBackgroundColor(bgcolor);
         rootView.setOnClickListener(new View.OnClickListener() {
@@ -101,8 +96,7 @@ public class CounterFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                storage_editor.putString("counter_label_" + counter_id, labelView.getText().toString());
-                storage_editor.apply();
+                counter.setLabel(labelView.getText().toString());
             }
         });
 
@@ -113,8 +107,7 @@ public class CounterFragment extends Fragment {
             public void onClick(View v) {
                 count++;
                 countView.setText(String.valueOf(count));
-                storage_editor.putInt("counter_count_" + counter_id, count);
-                storage_editor.apply();
+                counter.setCount(count);
             }
         });
 
@@ -124,8 +117,7 @@ public class CounterFragment extends Fragment {
             public void onClick(View v) {
                 count--;
                 countView.setText(String.valueOf(count));
-                storage_editor.putInt("counter_count_" + counter_id, count);
-                storage_editor.apply();
+                counter.setCount(count);
             }
         });
 
@@ -135,8 +127,7 @@ public class CounterFragment extends Fragment {
             public void onClick(View v) {
                 count = 0;
                 countView.setText(String.valueOf(count));
-                storage_editor.putInt("counter_count_" + counter_id, count);
-                storage_editor.apply();
+                counter.setCount(count);
             }
         });
 
@@ -144,18 +135,10 @@ public class CounterFragment extends Fragment {
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DataStore dbstorage = DataStore.getInstance();
+                int counters = storage.meta.getInt(MainActivity.NUMBER_OF_COUNTERS, MainActivity.DEFAULT_NUMBER_OF_COUNTERS) - 1;
+                storage.meta.set(MainActivity.NUMBER_OF_COUNTERS, counters);
 
-                int counters = dbstorage.meta.getInt(MainActivity.NUMBER_OF_COUNTERS, MainActivity.DEFAULT_NUMBER_OF_COUNTERS) - 1;
-
-                dbstorage.meta.set(MainActivity.NUMBER_OF_COUNTERS, counters);
-
-                int current_position = ((MainActivity) getActivity()).mViewPager.getCurrentItem();
-
-                for (int i = current_position + 1; i < ((MainActivity) getActivity()).mSectionsPagerAdapter.getCount(); i++) {
-                    storage_editor.putString("counter_uuid_" + i, storage.getString("counter_uuid_" + (i + 1), null));
-                }
-                storage_editor.apply();
+                storage.counters.removeCounter(counter.getId());
 
                 ((MainActivity) getActivity()).mSectionsPagerAdapter.deletePage();
             }
