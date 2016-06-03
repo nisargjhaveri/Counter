@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -38,21 +39,11 @@ public class SettingsActivity extends AppCompatActivity {
         listLocales.add("gu");
         listLocales.add("hi");
 
-        Locale current = getResources().getConfiguration().locale;
-
-        ArrayAdapter adapter = new LocaleListAdapter(this, listLocales, current);
-
-        ListView listView = (ListView) findViewById(R.id.select_locale);
-        listView.setAdapter(adapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String lang = parent.getAdapter().getItem(position).toString();
-                setLocale(lang);
-                storeLocalePreference(lang);
-                refreshActivity();
-            }
-        });
+        LinearLayout localeListView = (LinearLayout) findViewById(R.id.select_locale);
+        for (String locale: listLocales) {
+            View localeListItem = getLocaleItemView(locale);
+            localeListView.addView(localeListItem);
+        }
     }
 
     public void storeLocalePreference(String lang) {
@@ -75,38 +66,34 @@ public class SettingsActivity extends AppCompatActivity {
         finish();
     }
 
-    public static class LocaleListAdapter extends ArrayAdapter<String> {
+    public View getLocaleItemView(final String lang) {
+        View v = LayoutInflater.from(this).inflate(R.layout.locale_item, null, false);
 
-        Locale current_locale;
+        Locale current_locale = getResources().getConfiguration().locale;
+        Locale l = new Locale(lang);
 
-        public LocaleListAdapter(Context context,List<String> objects, Locale c) {
-            super(context, 0, objects);
-            current_locale = c;
+        TextView locale_native_name = (TextView) v.findViewById(R.id.locale_native_name);
+        locale_native_name.setText(l.getDisplayName(l));
+
+        TextView locale_name = (TextView) v.findViewById(R.id.locale_name);
+        locale_name.setText(l.getDisplayName(current_locale));
+
+        TextView locale_selected = (TextView) v.findViewById(R.id.locale_selected);
+        if (l.getLanguage().equals(current_locale.getLanguage())) {
+            locale_selected.setText("✓");
+        } else {
+            locale_selected.setText("");
         }
 
-        public View getView(int position, View v, ViewGroup parent) {
-            String lang = getItem(position);
-
-            if (v == null) {
-                v = LayoutInflater.from(getContext()).inflate(R.layout.locale_item, parent, false);
+        v.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setLocale(lang);
+                storeLocalePreference(lang);
+                refreshActivity();
             }
+        });
 
-            Locale l = new Locale(lang);
-
-            TextView locale_native_name = (TextView) v.findViewById(R.id.locale_native_name);
-            locale_native_name.setText(l.getDisplayName(l));
-
-            TextView locale_name = (TextView) v.findViewById(R.id.locale_name);
-            locale_name.setText(l.getDisplayName(current_locale));
-
-            TextView locale_selected = (TextView) v.findViewById(R.id.locale_selected);
-            if (l.getLanguage().equals(current_locale.getLanguage())) {
-                locale_selected.setText("✓");
-            } else {
-                locale_selected.setText("");
-            }
-
-            return v;
-        }
+        return v;
     }
 }
