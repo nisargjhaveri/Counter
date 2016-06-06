@@ -3,6 +3,7 @@ package in.nisargjhaveri.counter;
 import android.app.Application;
 import android.content.res.AssetManager;
 import android.graphics.Typeface;
+import android.os.Build;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
@@ -21,6 +22,16 @@ public class CounterApplication extends Application {
         DataStore.init(getApplicationContext());
 
         // Set Fonts
+        setDefaultFonts();
+    }
+
+    private void setDefaultFonts() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            return;
+        }
+
+        // Works with Android API 21 to 23
+        // Not sure after that as it uses hidden APIs that might get removed or changed in future
         Typeface normal = getTypefaceFromAssets(getAssets(), new String[]{"fonts/NotoSansDevanagari-Regular.ttf", "fonts/NotoSansGujarati-Regular.ttf"});
         Typeface bold = getTypefaceFromAssets(getAssets(), new String[]{"fonts/NotoSansDevanagari-Bold.ttf", "fonts/NotoSansGujarati-Bold.ttf"});
         Typeface italic = getTypefaceFromAssets(getAssets(), new String[]{});
@@ -56,7 +67,9 @@ public class CounterApplication extends Application {
             final Field staticField = Typeface.class.getDeclaredField("sSystemFontMap");
             staticField.setAccessible(true);
             staticField.set(null, newMap);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
             e.printStackTrace();
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
@@ -65,14 +78,17 @@ public class CounterApplication extends Application {
         }
     }
 
-    public static Typeface getTypefaceFromAssets(AssetManager mgr, String[] fontFileList) {
+    private static Typeface getTypefaceFromAssets(AssetManager mgr, String[] fontFileList) {
         Class FontFamily = null;
         Method addFontFromAsset;
 
         try {
             FontFamily = Class.forName("android.graphics.FontFamily");
             addFontFromAsset = FontFamily.getDeclaredMethod("addFontFromAsset", AssetManager.class, String.class);
-        } catch (ClassNotFoundException|NoSuchMethodException e) {
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        } catch (NoSuchMethodException e) {
             e.printStackTrace();
             return null;
         }
@@ -85,7 +101,11 @@ public class CounterApplication extends Application {
                 newFontFamily = FontFamily.newInstance();
                 addFontFromAsset.invoke(newFontFamily, mgr, fontFileList[i]);
                 Array.set(families, i, newFontFamily);
-            } catch (InstantiationException|IllegalAccessException|InvocationTargetException e) {
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
                 e.printStackTrace();
             }
         }
@@ -95,7 +115,13 @@ public class CounterApplication extends Application {
         try {
             createFromFamiliesWithDefault = Typeface.class.getDeclaredMethod("createFromFamiliesWithDefault", Class.forName("[Landroid.graphics.FontFamily;"));
             tf = (Typeface) createFromFamiliesWithDefault.invoke(null, families);
-        } catch (NoSuchMethodException|ClassNotFoundException|InvocationTargetException|IllegalAccessException e) {
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
 

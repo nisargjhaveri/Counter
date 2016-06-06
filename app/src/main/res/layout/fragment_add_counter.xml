@@ -40,7 +40,7 @@
         android:layout_centerHorizontal="true"
         android:padding="@dimen/tool_button_padding"
         android:alpha="0.7"
-        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:background="@drawable/button_effect"
         android:contentDescription="@string/app_settings" />
 
 </RelativeLayout>
