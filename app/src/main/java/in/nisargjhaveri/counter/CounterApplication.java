@@ -62,7 +62,7 @@ public class CounterApplication extends Application {
             sansSerifDefaultField.setAccessible(true);
             sansSerifDefaultField.set(null, normal);
 
-            Map<String, Typeface> newMap = new HashMap<String, Typeface>();
+            Map<String, Typeface> newMap = new HashMap<>();
             newMap.put("sans-serif", normal);
             final Field staticField = Typeface.class.getDeclaredField("sSystemFontMap");
             staticField.setAccessible(true);
@@ -79,7 +79,7 @@ public class CounterApplication extends Application {
     }
 
     private static Typeface getTypefaceFromAssets(AssetManager mgr, String[] fontFileList) {
-        Class FontFamily = null;
+        Class FontFamily;
         Method addFontFromAsset;
 
         try {
@@ -95,10 +95,9 @@ public class CounterApplication extends Application {
 
         Object families = Array.newInstance(FontFamily, fontFileList.length);
 
-        Object newFontFamily = null;
         for (int i = 0; i < fontFileList.length; i++) {
             try {
-                newFontFamily = FontFamily.newInstance();
+                Object newFontFamily = FontFamily.newInstance();
                 addFontFromAsset.invoke(newFontFamily, mgr, fontFileList[i]);
                 Array.set(families, i, newFontFamily);
             } catch (InstantiationException e) {
@@ -110,10 +109,9 @@ public class CounterApplication extends Application {
             }
         }
 
-        Method createFromFamiliesWithDefault = null;
         Typeface tf = null;
         try {
-            createFromFamiliesWithDefault = Typeface.class.getDeclaredMethod("createFromFamiliesWithDefault", Class.forName("[Landroid.graphics.FontFamily;"));
+            Method createFromFamiliesWithDefault = Typeface.class.getDeclaredMethod("createFromFamiliesWithDefault", Class.forName("[Landroid.graphics.FontFamily;"));
             tf = (Typeface) createFromFamiliesWithDefault.invoke(null, families);
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
